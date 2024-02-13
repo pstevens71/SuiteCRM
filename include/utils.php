@@ -6152,8 +6152,12 @@ function isSelfRequest($endpoint) : bool {
     if (empty($siteUrl)){
         $siteUrl = '';
     }
-
-    return stripos((string) $endpoint, (string) $domain) !== false || stripos((string) $endpoint, (string) $siteUrl) !== false;
+    $customEntryPoints = getCustomEntryPoints();
+    $entryPointPattern = "/^" . preg_quote($siteUrl, '/') . "\/\?entryPoint=(" . implode('|', $customEntryPoints) . ")$/i";
+    if (preg_match($entryPointPattern, $endpoint)) {
+        return false; // It matches a valid custom entry point URL
+    }
+    return stripos($endpoint, $domain) !== false || stripos($endpoint, $siteUrl) !== false;
 }
 
 /**

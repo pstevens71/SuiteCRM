@@ -6167,3 +6167,19 @@ function getCurrencyId($module, $id)
     global $locale;
     return BeanFactory::getBean($module, $id)->currency_id ?? $locale->getPrecedentPreference('currency');
 }
+/**
+* Generate a list of custom entry points to be used to allow iFrame embed
+*/
+function getCustomEntryPoints() {
+    $customEntryPoints = [];
+    $entryPointRegistryPath = 'custom/application/Ext/EntryPointRegistry/entry_point_registry.ext.php';
+    if (file_exists($entryPointRegistryPath)) {
+             include($entryPointRegistryPath);
+       if (isset($entry_point_registry) && is_array($entry_point_registry)) {
+            foreach ($entry_point_registry as $entryPointName => $entryPointData) {
+                $customEntryPoints[] = $entryPointName;
+            }
+        }
+    }
+    return $customEntryPoints;
+}
